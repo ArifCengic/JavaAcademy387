@@ -6,12 +6,26 @@ import java.util.Scanner;
  * Created by jackblack on 3/16/16.
  */
 public class Igrac {
-    String _name;
+    protected String _name;
     int _cipovi;
     Spil _s;
     private List<Karta> dobiveneKarte = new ArrayList<Karta>();
 
-    public boolean anotherCard() {
+    public int getBet(){
+        System.out.print(this.getName() + "\n Koliko zelite uloziti");
+        Scanner in = new Scanner(System.in);
+        String odgovor = in.nextLine();
+
+        //TODO errror checking
+        int ulog = Integer.parseInt(odgovor);
+//        if (ulog > _cipovi) {
+//            System.out.print(this.getName() + "\n Iznos veci od broja zetona");
+//        }
+        _cipovi = _cipovi - ulog;
+        return ulog;
+    }
+
+    public void anotherCard() {
         System.out.print(this.getName() + "\n Dali zelite jos jednu kartu");
         Scanner in = new Scanner(System.in);
         String odgovor = in.nextLine();
@@ -19,9 +33,11 @@ public class Igrac {
         if (odgovor.contains("Y"))
         {
             addKarta(_s.getNextCard());
-            return true;
+            if (this.zbir() > 21)
+            {
+                System.out.print(getName() + " je izgubio " + zbir() + " \n");
+            }
         }
-        else return false;
     }
 
     public int compareTo(Igrac i){
@@ -73,10 +89,15 @@ public class Igrac {
         }
         return sum;
     }
+
     public Igrac(String name,int cipovi, Spil s)
     {
         _name = name;
         _cipovi = cipovi;
         _s = s;
+    }
+    public Igrac()
+    {
+
     }
 }
