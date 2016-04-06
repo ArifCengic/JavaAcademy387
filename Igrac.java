@@ -7,36 +7,62 @@ import java.util.Scanner;
  */
 public class Igrac {
     protected String _name;
-    int _cipovi;
-    Spil _s;
+    private int _cipovi;
+    private ISpil _s;
     private List<Karta> dobiveneKarte = new ArrayList<Karta>();
 
-    public int getBet(){
-        System.out.print(this.getName() + "\n Koliko zelite uloziti");
-        Scanner in = new Scanner(System.in);
-        String odgovor = in.nextLine();
+    public int addChip(int dobitak)
+    {
+        _cipovi = _cipovi + dobitak;
+        return _cipovi;
+    }
 
-        //TODO errror checking
-        int ulog = Integer.parseInt(odgovor);
-//        if (ulog > _cipovi) {
-//            System.out.print(this.getName() + "\n Iznos veci od broja zetona");
-//        }
+    public int getChips() { return  _cipovi;}
+
+     public int getBet(){
+
+         int ulog = 0;
+         boolean error = false;
+         do {
+             System.out.print(this.getName() + "\n Koliko zelite uloziti");
+             Scanner in = new Scanner(System.in);
+             String odgovor = in.nextLine();
+
+             //TODO error checking
+             try {
+                 ulog = Integer.parseInt(odgovor);
+             }
+             catch (Exception e)
+             {
+                 System.out.print(this.getName() + "\n Invalid input");
+                 error = true;
+                 continue;
+             }
+
+             if (ulog > _cipovi) {
+                 System.out.print(this.getName() + "\n Iznos veci od broja zetona");
+                 error = true;
+                 continue;
+             }
+
+             error = false;
+         } while(error);
+
         _cipovi = _cipovi - ulog;
         return ulog;
     }
 
     public void anotherCard() {
-        System.out.print(this.getName() + "\n Dali zelite jos jednu kartu");
-        Scanner in = new Scanner(System.in);
-        String odgovor = in.nextLine();
-
-        if (odgovor.contains("Y"))
+        String odgovor;
+        while( this.zbir() < 21)
         {
-            addKarta(_s.getNextCard());
-            if (this.zbir() > 21)
-            {
-                System.out.print(getName() + " je izgubio " + zbir() + " \n");
-            }
+            System.out.print(this.getName() + "\n Dali zelite jos jednu kartu");
+            Scanner in = new Scanner(System.in);
+            odgovor = in.nextLine();
+
+            if (odgovor.contains("Y")) addKarta();
+            else break;
+
         }
     }
 
@@ -47,10 +73,11 @@ public class Igrac {
         return 0;
     }
 
-    public void addKarta(Karta k) {
+    public void addKarta() {
 
         //normal execution
         try {
+            Karta k = _s.getNextCard();
             dobiveneKarte.add(k);
             System.out.print("  " + this.getName() + " = " + k.getKarta());
             if (zbir() > 21) lost = true;
@@ -90,7 +117,7 @@ public class Igrac {
         return sum;
     }
 
-    public Igrac(String name,int cipovi, Spil s)
+    public Igrac(String name,int cipovi, ISpil s)
     {
         _name = name;
         _cipovi = cipovi;
