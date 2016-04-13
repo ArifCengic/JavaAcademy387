@@ -1,18 +1,44 @@
+import javafx.scene.image.Image;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by jackblack on 3/14/16.
  */
 class Karta
 {
-    static final String[] znakovi = {"Pik", "Hertz", "Tref", "Karo"};
+    public enum Znak {
+        Pik(1), Hertz(2), Tref(3), Karo(4);
+
+        private final int index;
+
+        Znak(int index) {
+            this.index = index;
+        }
+
+        public int index() {
+            return index;
+        }
+    }
+
+
+    public static int count;
 
     private int broj;  //attribute, property of the object
-    private String znak; //fields , instance variable
+    private Znak znak; //fields , instance variable
+    public Image image;
 
     public  Karta(int broj, int znak){
         this.setBroj(broj);
         this.setZnak(znak);
     }
+
     public int getBroj() { return this.broj;}
+    public int getZnak() {
+        return znak.index();
+    }
+
     public boolean setBroj(int value){
         if(value > 1 && value < 15)
         {
@@ -23,6 +49,8 @@ class Karta
     }
 
     public String getKarta(){
+        count++;
+
         String rezultat = "";
 
         switch (broj)
@@ -48,25 +76,21 @@ class Karta
     }
 
     public boolean setZnak(int value) {
-        if(value >= 0 && value < 4)
-        {
-            znak = znakovi[value];
-            return true;
+        for (Znak z : Znak.values()) {
+            if (z.index() == value) {
+                znak = z;
+                return true;
+            }
         }
-
         return false;
     }
 
     public boolean setZnak(String value) {
         boolean found = false;
 
-        for(int i = 0 ; i < znakovi.length; i++ ){
-            if(value == znakovi[i]) {
-                found = true;
-                znak = value;
-            }
-        }
-        return found;
+        znak = Znak.valueOf(value);
+
+        return true;
     }
 }
 

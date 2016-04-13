@@ -6,8 +6,6 @@ import java.util.List;
  */
 public class TestSpil implements ISpil  {
 
-
-
         List<Karta> spil = new ArrayList<Karta>();
 
         public TestSpil() {

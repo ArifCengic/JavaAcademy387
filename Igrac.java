@@ -6,11 +6,23 @@ import java.util.Scanner;
  * Created by jackblack on 3/16/16.
  */
 public class Igrac {
+
     protected String _name;
     private int _cipovi;
     private ISpil _s;
+    //TODO resetovati poslije svake igre
     private List<Karta> dobiveneKarte = new ArrayList<Karta>();
+    public boolean won = false;
+    public boolean lost = false;
+    private int totalUlog = 0;
 
+    public void reset() {
+        dobiveneKarte = new ArrayList<Karta>();
+        won = false;
+        lost = false;
+        totalUlog = 0;
+    }
+    public int getTotalUlog() { return totalUlog; }
     public int addChip(int dobitak)
     {
         _cipovi = _cipovi + dobitak;
@@ -28,7 +40,6 @@ public class Igrac {
              Scanner in = new Scanner(System.in);
              String odgovor = in.nextLine();
 
-             //TODO error checking
              try {
                  ulog = Integer.parseInt(odgovor);
              }
@@ -45,10 +56,23 @@ public class Igrac {
                  continue;
              }
 
+             if (ulog > Game.MAX_BET) {
+                 System.out.print(this.getName() + "\n Iznos veci od Maximuma Stola");
+                 error = true;
+                 continue;
+             }
+
+             if (ulog < Game.MIN_BET) {
+                 System.out.print(this.getName() + "\n Iznos manji od Minimuma Stola");
+                 error = true;
+                 continue;
+             }
+
              error = false;
          } while(error);
 
         _cipovi = _cipovi - ulog;
+         totalUlog = totalUlog + ulog;
         return ulog;
     }
 
@@ -79,13 +103,14 @@ public class Igrac {
         try {
             Karta k = _s.getNextCard();
             dobiveneKarte.add(k);
+           // UI.dodajKartu(k.image);
             System.out.print("  " + this.getName() + " = " + k.getKarta());
             if (zbir() > 21) lost = true;
+            if (zbir() == 21) won = true;
         }
-
         catch (Exception e){
             //error handling
-            System.out.println( e.toString() );
+            System.out.println("Error in addKarta " + e.toString() );
         }
     }
 
@@ -93,7 +118,6 @@ public class Igrac {
         dobiveneKarte.clear();
         lost = false;
     }
-    public boolean lost = false;
 
     public String getName() { return _name;}
     public int getCipovi() {return _cipovi;}
@@ -103,8 +127,11 @@ public class Igrac {
         int sum = 0;
         int brojAsova = 0;
         for (Karta k:dobiveneKarte) {
+
             if(k.getBroj() == 11) brojAsova++;
-            sum += k.getBroj();
+
+            if(k.getBroj() > 11) sum += 10;
+            else sum += k.getBroj();
         }
 
         if (sum > 21 && brojAsova > 0)
