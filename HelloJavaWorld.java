@@ -15,7 +15,7 @@ public class HelloJavaWorld {
 
         boolean test = false;
         ISpil s;
-        
+
         if (test) {
             s = new TestSpil();
             setTestData(s);
